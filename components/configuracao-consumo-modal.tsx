@@ -133,7 +133,7 @@ export function ConfiguracaoConsumoModal({ children }: ConfiguracaoConsumoModalP
   };
 
   // Atualizar configuração geral
-  const handleUpdateGeral = (material: 'primer' | 'base' | 'verniz', field: string, value: any) => {
+  const handleUpdateGeral = (material: 'primer' | 'base' | 'verniz', field: string, value: string | number) => {
     if (!configuracao) return;
 
     const novaConfiguracao: ConfiguracaoConsumo = {
@@ -151,7 +151,7 @@ export function ConfiguracaoConsumoModal({ children }: ConfiguracaoConsumoModalP
   };
 
   // Atualizar configuração de base por cor
-  const handleUpdateBase = (cor: string, field: string, value: any) => {
+  const handleUpdateBase = (cor: string, field: string, value: string | number) => {
     if (!configuracao) return;
 
     const novaConfiguracao: ConfiguracaoConsumo = {
@@ -458,7 +458,7 @@ export function ConfiguracaoConsumoModal({ children }: ConfiguracaoConsumoModalP
                     />
                   </div>
                   <div className="text-sm text-muted-foreground p-3 bg-blue-50 rounded">
-                    ℹ️ A taxa de diluição para bases é configurada individualmente por cor na aba "Configurações por Cor"
+                    ℹ️ A taxa de diluição para bases é configurada individualmente por cor na aba &quot;Configurações por Cor&quot;
                   </div>
                   <div>
                     <Label>Taxa de Catalisador (%)</Label>

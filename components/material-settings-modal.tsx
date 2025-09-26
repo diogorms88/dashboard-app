@@ -227,7 +227,7 @@ export function MaterialSettingsModal({ children }: MaterialSettingsModalProps) 
   };
 
   // Atualizar material local
-  const updateMaterial = (id: number, field: keyof MaterialSetting, value: any) => {
+  const updateMaterial = (id: number, field: keyof MaterialSetting, value: string | number) => {
     setMaterials(prev => prev.map(material => 
       material.id === id ? { ...material, [field]: value } : material
     ));

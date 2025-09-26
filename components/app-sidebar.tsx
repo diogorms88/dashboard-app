@@ -121,7 +121,7 @@ export function AppSidebar() {
   const fetchNoActionCount = async () => {
     try {
       const data = await apiRequest('/item-requests')
-      const noActionRequests = data.filter((request: any) => !request.assigned_to)
+      const noActionRequests = data.filter((request: Record<string, unknown>) => !request.assigned_to)
       setNoActionCount(noActionRequests.length)
     } catch (error) {
       console.error('Erro ao buscar contagem de solicitações sem ação:', error)

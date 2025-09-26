@@ -174,7 +174,7 @@ export default function Form8DDetailPage() {
     }
   }
 
-  const updateDiscipline = async (disciplineId: string, status: string, data?: any) => {
+  const updateDiscipline = async (disciplineId: string, status: string, data?: Record<string, unknown>) => {
     try {
       await apiRequest(`/forms-8d/${formId}/disciplines/${disciplineId}`, {
         method: 'PUT',

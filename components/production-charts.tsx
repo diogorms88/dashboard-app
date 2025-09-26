@@ -609,7 +609,7 @@ export default function ProductionCharts({ filters }: ProductionChartsProps) {
                 {(() => {
                   // Agrupar dados por motivo e calcular soma diária
                   const reasonTotals: { [key: string]: number } = {};
-                  const reasonHourlyData: { [key: string]: { [hour: number]: { value: number; details: any[] } } } = {};
+                  const reasonHourlyData: { [key: string]: { [hour: number]: { value: number; details: Record<string, unknown>[] } } } = {};
                   
                   heatmapData.forEach(item => {
                     item.reasons.forEach(reason => {

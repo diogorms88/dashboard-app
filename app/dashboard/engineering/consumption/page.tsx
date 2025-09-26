@@ -119,7 +119,7 @@ export default function ConsumptionPage() {
         method: 'GET'
       });
       const currentSettings = settings || materialSettings;
-      const processedItems = data.map((item: any) => {
+      const processedItems = data.map((item: Record<string, unknown>) => {
         const calculatedConsumption = calculateConsumptionWithDilutionSync(item, currentSettings);
         return {
           ...item,
@@ -143,7 +143,7 @@ export default function ConsumptionPage() {
       });
       const settings: MaterialSettings = {};
       
-      data.forEach((setting: any) => {
+      data.forEach((setting: Record<string, unknown>) => {
         settings[setting.material_name] = {
           dilution_rate: setting.dilution_rate,
           catalyst_rate: setting.catalyst_rate
@@ -158,7 +158,7 @@ export default function ConsumptionPage() {
     }
   };
 
-  const calculateConsumptionWithDilutionSync = (item: any, settings: MaterialSettings) => {
+  const calculateConsumptionWithDilutionSync = (item: Record<string, unknown>, settings: MaterialSettings) => {
     // Os valores do banco são já diluídos, precisamos calcular o valor puro
     const primerDiluted = item.primer_ml_per_piece || 0;
     const baseDiluted = item.base_ml_per_piece || 0;
@@ -214,7 +214,7 @@ export default function ConsumptionPage() {
     };
   };
 
-  const calculateConsumptionWithDilution = async (item: any) => {
+  const calculateConsumptionWithDilution = async (item: Record<string, unknown>) => {
     return calculateConsumptionWithDilutionSync(item, materialSettings);
   };
 
@@ -336,7 +336,7 @@ export default function ConsumptionPage() {
             
             <div className="bg-muted/50 p-4 rounded-lg">
               <p className="text-sm text-muted-foreground">
-                <strong>Nota:</strong> Os valores de consumo de materiais e diluentes serão calculados automaticamente com base nas configurações definidas na aba "Configurações". Certifique-se de que o modelo e cor selecionados possuem configurações cadastradas.
+                <strong>Nota:</strong> Os valores de consumo de materiais e diluentes serão calculados automaticamente com base nas configurações definidas na aba &quot;Configurações&quot;. Certifique-se de que o modelo e cor selecionados possuem configurações cadastradas.
               </p>
             </div>
             
@@ -379,7 +379,7 @@ export default function ConsumptionPage() {
               {items.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={10} className="text-center text-muted-foreground py-8">
-                    Nenhum item adicionado. Clique em "Adicionar Item" para começar.
+                    Nenhum item adicionado. Clique em &quot;Adicionar Item&quot; para começar.
                   </TableCell>
                 </TableRow>
               ) : (

@@ -286,7 +286,7 @@ export default function RequestsPage() {
             <CardTitle className="mb-2">Nenhuma solicitação encontrada</CardTitle>
             <CardDescription className="text-center mb-4">
               Você ainda não fez nenhuma solicitação de item.
-              Clique em "Nova Solicitação" para começar.
+              Clique em &quot;Nova Solicitação&quot; para começar.
             </CardDescription>
           </CardContent>
         </Card>

@@ -16,8 +16,8 @@ interface ProductionRecord {
   empty_skids: number
   created_at: string
   created_by_name: string
-  paradas?: any[]
-  producao?: any[]
+  paradas?: Record<string, unknown>[]
+  producao?: Record<string, unknown>[]
 }
 
 export function ProductionRecordsList() {
@@ -75,12 +75,12 @@ export function ProductionRecordsList() {
     return timeString || 'N/A'
   }
 
-  const formatParadas = (paradas: any[]) => {
+  const formatParadas = (paradas: Record<string, unknown>[]) => {
     if (!paradas || paradas.length === 0) return 'Nenhuma'
     return paradas.length + ' parada(s)'
   }
 
-  const formatProducao = (producao: any[]) => {
+  const formatProducao = (producao: Record<string, unknown>[]) => {
     if (!producao || producao.length === 0) return 'Nenhuma'
     const total = producao.reduce((sum, item) => sum + (item.qtd || 0), 0)
     return total + ' peças'
