@@ -133,17 +133,11 @@ class DashboardService {
     let totalPecasRepintura = 0
     let totalParadas = 0
     let totalParadasExcluidas = 0
-    let totalHorasComProducao = 0
     let tempoExcluidoParaAcumulado = 0 // Para calcular acumulado hora hora
     
     // Contadores específicos para MTBF/MTTR (apenas MANUTENÇÃO)
     let tempoTotalManutencao = 0
     let totalParadasManutencao = 0
-
-    // Palavras-chave para identificar manutenção quando critério está vazio
-    const keywordsMaintenance = [
-      'ROBÔ', 'ROBOT', 'TRAVADO', 'PROBLEMA', 'DEFEITO', 'FALHA', 'QUEBRA'
-    ]
 
     // Processar cada registro
     registros.forEach(registro => {
@@ -191,9 +185,7 @@ class DashboardService {
           }
         })
         
-        if (registro.producao.length > 0) {
-          totalHorasComProducao++
-        }
+        // Total de horas com produção (removido pois não era usado)
       }
     })
 

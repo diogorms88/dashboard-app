@@ -17,9 +17,28 @@ export interface UserWithoutPassword {
   created_at: string
 }
 
+interface SqlJsDatabase {
+  run(sql: string, params?: unknown[]): void
+  exec(sql: string): Array<{ columns: string[], values: unknown[][] }>
+  prepare(sql: string): SqlJsStatement
+  export(): Uint8Array
+}
+
+interface SqlJsStatement {
+  step(): boolean
+  get(): unknown[]
+  getAsObject(): Record<string, unknown>
+  bind(params: unknown[]): boolean
+  free(): boolean
+}
+
+interface SqlJsStatic {
+  Database: new (data?: ArrayLike<number> | Buffer) => SqlJsDatabase
+}
+
 class DatabaseService {
-  private db: any = null
-  private SQL: any = null
+  private db: SqlJsDatabase | null = null
+  private SQL: SqlJsStatic | null = null
   private initialized = false
   private readonly DB_KEY = 'plascar_database'
 
@@ -160,6 +179,8 @@ class DatabaseService {
       const result = stmt.getAsObject() as User
       stmt.free()
       const { senha, ...userWithoutPassword } = result
+      // senha é extraída mas não usada por questão de segurança
+      void senha
       return userWithoutPassword as UserWithoutPassword
     }
     

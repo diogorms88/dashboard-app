@@ -13,7 +13,7 @@ export interface Usuario {
   updated_at: string
 }
 
-export interface UsuarioSemSenha extends Omit<Usuario, 'senha'> {}
+export type UsuarioSemSenha = Omit<Usuario, 'senha'>
 
 export interface AuthResponse {
   user: UsuarioSemSenha | null
@@ -47,7 +47,9 @@ class SupabaseAuthService {
         console.log('✅ Usuário encontrado:', usuarios.nome)
         
         // Remover senha do objeto de retorno
-        const { senha: _, ...usuarioSemSenha } = usuarios
+        const { senha, ...usuarioSemSenha } = usuarios
+        // senha é extraída mas não usada por questão de segurança
+        void senha
         
         // Gerar um token simples (você pode implementar JWT aqui se quiser)
         const token = btoa(JSON.stringify({ 

@@ -283,7 +283,7 @@ export async function GET(request: NextRequest) {
           console.log(`🎯 Primer P&A - Config específica: P=${configEspecifica.primer} (sem base nem verniz)`)
         } else {
           // Fallback para Primer P&A: usar apenas o primer de configurações similares
-          const configsSimilares = configuracao.especificas.filter((s: any) => 
+          const configsSimilares = configuracao.especificas.filter((s: Record<string, unknown>) => 
             s.modelo === detail.modelo && s.cor !== detail.cor
           )
           
@@ -291,10 +291,10 @@ export async function GET(request: NextRequest) {
             // CORREÇÃO: Para Primer P&A, usar valor mais alto pois é o único material
             // Em vez da média do primer (que é baixo nas outras cores), usar um valor estimado
             // baseado no consumo total típico das outras cores
-            const avgTotal = configsSimilares.reduce((sum: number, c: any) => {
-              const primer = parseFloat(c.primer) || 0
-              const base = parseFloat(c.base) || 0
-              const verniz = parseFloat(c.verniz) || 0
+            const avgTotal = configsSimilares.reduce((sum: number, c: Record<string, unknown>) => {
+              const primer = parseFloat(String(c.primer)) || 0
+              const base = parseFloat(String(c.base)) || 0
+              const verniz = parseFloat(String(c.verniz)) || 0
               return sum + primer + base + verniz
             }, 0) / configsSimilares.length
             
@@ -328,15 +328,15 @@ export async function GET(request: NextRequest) {
           console.log(`⚠️ Config específica não encontrada para ${detail.modelo} (${detail.cor})`)
           
           // Buscar outras configurações do mesmo modelo para estimar
-          const configsSimilares = configuracao.especificas.filter((s: any) => 
+          const configsSimilares = configuracao.especificas.filter((s: Record<string, unknown>) => 
             s.modelo === detail.modelo && s.cor !== detail.cor
           )
           
           if (configsSimilares.length > 0) {
             // Usar média das configurações existentes do mesmo modelo
-            const avgPrimer = configsSimilares.reduce((sum: number, c: any) => sum + parseFloat(c.primer), 0) / configsSimilares.length
-            const avgBase = configsSimilares.reduce((sum: number, c: any) => sum + parseFloat(c.base || 0), 0) / configsSimilares.length
-            const avgVerniz = configsSimilares.reduce((sum: number, c: any) => sum + parseFloat(c.verniz), 0) / configsSimilares.length
+            const avgPrimer = configsSimilares.reduce((sum: number, c: Record<string, unknown>) => sum + parseFloat(String(c.primer)), 0) / configsSimilares.length
+            const avgBase = configsSimilares.reduce((sum: number, c: Record<string, unknown>) => sum + parseFloat(String(c.base) || '0'), 0) / configsSimilares.length
+            const avgVerniz = configsSimilares.reduce((sum: number, c: Record<string, unknown>) => sum + parseFloat(String(c.verniz)), 0) / configsSimilares.length
             
             primerMl = avgPrimer * quantidade
             baseMl = avgBase * quantidade  
