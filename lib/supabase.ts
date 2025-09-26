@@ -1,32 +1,49 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 
-// URLs e chaves com fallback garantido
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://alrfqjazctnjdewdthun.supabase.co'
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscmZxamF6Y3RuamRld2R0aHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNzY3NDYsImV4cCI6MjA0Mjg1Mjc0Nn0.3iJWo1PjPr5EoKSJk7xNUK3hRSJPKDhbP6gvnx9f6Jg'
+// Cliente lazy - criado apenas quando necessário
+let _supabaseClient: SupabaseClient | null = null
 
-// Garantir que as variáveis nunca sejam undefined
-if (!supabaseUrl || supabaseUrl === 'undefined' || supabaseUrl === '') {
-  throw new Error('NEXT_PUBLIC_SUPABASE_URL é obrigatória mas não foi definida')
+// Função para obter o cliente Supabase com carregamento lazy
+function getSupabaseClient(): SupabaseClient {
+  if (!_supabaseClient) {
+    // URLs e chaves com fallback garantido
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://alrfqjazctnjdewdthun.supabase.co'
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscmZxamF6Y3RuamRld2R0aHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNzY3NDYsImV4cCI6MjA0Mjg1Mjc0Nn0.3iJWo1PjPr5EoKSJk7xNUK3hRSJPKDhbP6gvnx9f6Jg'
+
+    // Garantir que as variáveis nunca sejam undefined
+    if (!supabaseUrl || supabaseUrl === 'undefined' || supabaseUrl === '') {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_URL não definida, usando fallback')
+    }
+    if (!supabaseAnonKey || supabaseAnonKey === 'undefined' || supabaseAnonKey === '') {
+      console.error('❌ NEXT_PUBLIC_SUPABASE_ANON_KEY não definida, usando fallback')
+    }
+
+    // Debug das variáveis de ambiente (apenas no desenvolvimento)
+    if (process.env.NODE_ENV === 'development') {
+      console.log('🔧 SUPABASE CONFIG DEBUG:', {
+        url: supabaseUrl,
+        hasKey: !!supabaseAnonKey,
+        envUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+        envKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'presente' : 'ausente'
+      })
+    }
+
+    _supabaseClient = createClient(supabaseUrl, supabaseAnonKey, {
+      auth: {
+        autoRefreshToken: true,
+        persistSession: true,
+        detectSessionInUrl: true
+      }
+    })
+  }
+  
+  return _supabaseClient
 }
-if (!supabaseAnonKey || supabaseAnonKey === 'undefined' || supabaseAnonKey === '') {
-  throw new Error('NEXT_PUBLIC_SUPABASE_ANON_KEY é obrigatória mas não foi definida')
-}
 
-// Debug das variáveis de ambiente (apenas no desenvolvimento)
-if (process.env.NODE_ENV === 'development') {
-  console.log('🔧 SUPABASE CONFIG DEBUG:', {
-    url: supabaseUrl,
-    hasKey: !!supabaseAnonKey,
-    envUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    envKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'presente' : 'ausente'
-  })
-}
-
-export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
-  auth: {
-    autoRefreshToken: true,
-    persistSession: true,
-    detectSessionInUrl: true
+// Export como getter para manter compatibilidade
+export const supabase = new Proxy({} as SupabaseClient, {
+  get(target, prop) {
+    return getSupabaseClient()[prop as keyof SupabaseClient]
   }
 })
 
