@@ -3,6 +3,14 @@ import { createClient } from '@supabase/supabase-js'
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://alrfqjazctnjdewdthun.supabase.co'
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscmZxamF6Y3RuamRld2R0aHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MjcyNzY3NDYsImV4cCI6MjA0Mjg1Mjc0Nn0.3iJWo1PjPr5EoKSJk7xNUK3hRSJPKDhbP6gvnx9f6Jg'
 
+// Debug das variáveis de ambiente
+console.log('🔧 SUPABASE CONFIG DEBUG:', {
+  url: supabaseUrl,
+  hasKey: !!supabaseAnonKey,
+  envUrl: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  envKey: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ? 'presente' : 'ausente'
+})
+
 // Verificar se as variáveis estão definidas
 if (!supabaseUrl || supabaseUrl === 'undefined') {
   console.error('❌ NEXT_PUBLIC_SUPABASE_URL não está definida!')
