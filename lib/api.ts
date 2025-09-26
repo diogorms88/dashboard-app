@@ -3,16 +3,19 @@ import { dashboardService } from './dashboard-service'
 
 // Configuração dinâmica da API baseada no ambiente
 const getApiBaseUrl = () => {
-  // Se estiver rodando no servidor (localhost), usar localhost
-  // Se estiver acessando de outro computador, usar o IP do host atual
   if (typeof window !== 'undefined') {
     const hostname = window.location.hostname;
+    const protocol = window.location.protocol; // http: ou https:
+    const port = window.location.port;
+    
     if (hostname === 'localhost' || hostname === '127.0.0.1') {
       return 'http://localhost:3000/api';
     } else if (hostname === 'plascar.local' || hostname === 'dashboard.plascar.local') {
       return 'http://plascar.local:3000/api';
     } else {
-      return `http://${hostname}:3000/api`;
+      // Para ambientes de produção (Vercel), usar o mesmo protocolo da página
+      // E não usar porta, pois Vercel usa porta padrão (80/443)
+      return `${protocol}//${hostname}/api`;
     }
   }
   // Fallback para server-side rendering
