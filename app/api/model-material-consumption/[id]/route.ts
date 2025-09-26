@@ -4,7 +4,7 @@ import { verifyToken } from '@/lib/auth'
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticação
@@ -19,7 +19,7 @@ export async function DELETE(
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
-    const { id } = params
+    const { id } = await params
 
     console.log(`🗑️ Deletando configuração de consumo ID: ${id}`)
 
@@ -51,7 +51,7 @@ export async function DELETE(
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     // Verificar autenticação
@@ -66,7 +66,7 @@ export async function GET(
       return NextResponse.json({ error: 'Token inválido' }, { status: 401 })
     }
 
-    const { id } = params
+    const { id } = await params
 
     console.log(`🔍 Buscando configuração de consumo ID: ${id}`)
 

@@ -130,7 +130,7 @@ export async function GET(request: NextRequest) {
 
     // 3. Converter para formato pivot esperado pelo frontend
     const finalData = Object.keys(modelHourData).map(modelo => {
-      const rowData: any = { modelo }
+      const rowData: Record<string, number | string> = { modelo }
       let total = 0
       
       // Adicionar dados para cada hora
@@ -145,7 +145,7 @@ export async function GET(request: NextRequest) {
     })
 
     // Ordenar por total decrescente
-    finalData.sort((a, b) => b.total - a.total)
+    finalData.sort((a, b) => (b.total as number) - (a.total as number))
 
     console.log('📊 Dados processados:', {
       registros: registrosFiltrados?.length || 0,
