@@ -8,7 +8,7 @@ function getSupabaseClient(): SupabaseClient {
   if (!_supabaseClient) {
     // URLs e chaves com fallback garantido
     const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || 'https://alrfqjazctnjdewdthun.supabase.co'
-    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFscmZxamF6Y3RuamRld2R0aHVuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzcxMzQ3MDAsImV4cCI6MjA1MjcxMDcwMH0.LKJwPQBOjp97a8Jg0_-M0YYQJc--yNaYX4_m1QW93Ws'
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'sb_publishable_Hyy30QVgFAzYHxuEdfwv4w_25uLQkh0'
 
     // Garantir que as variáveis nunca sejam undefined
     if (!supabaseUrl || supabaseUrl === 'undefined' || supabaseUrl === '') {
