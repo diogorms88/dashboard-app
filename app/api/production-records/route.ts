@@ -205,6 +205,10 @@ async function handlePost(request: NextRequest) {
       }, { status: 400 })
     }
 
+    // Converter skidsProduced para número
+    const skidsProducedNum = parseInt(skidsProduced) || 0
+    const emptySkidsNum = parseInt(emptySkids) || 0
+
     // Verificar se já existe um registro para este horário e data
     const { data: existingRecord, error: checkError } = await supabase
       .from('registros')
@@ -229,19 +233,19 @@ async function handlePost(request: NextRequest) {
     }
 
     // Preparar dados de paradas no formato JSON
-    const paradasData = downtimes.map(downtime => ({
-      tipo: downtime.reason,
-      tempo: downtime.duration,
+    const paradasData = (downtimes || []).map(downtime => ({
+      tipo: downtime.reason || '',
+      tempo: parseInt(downtime.duration) || 0,
       descrição: downtime.description || '',
-      criterio: getAreaFromReason(downtime.reason)
+      criterio: getAreaFromReason(downtime.reason || '')
     }))
 
     // Preparar dados de produção no formato JSON
-    const producaoData = productions.map(production => ({
-      modelo: production.model,
-      cor: production.color,
-      qtd: production.quantity,
-      repintura: production.isRepaint
+    const producaoData = (productions || []).map(production => ({
+      modelo: production.model || '',
+      cor: production.color || '',
+      qtd: parseInt(production.quantity) || 0,
+      repintura: production.isRepaint || false
     }))
 
     // Inserir registro na tabela registros
@@ -250,8 +254,8 @@ async function handlePost(request: NextRequest) {
       .insert({
         data: targetDate,
         hora: selectedTime,
-        skids: skidsProduced,
-        skids_vazios: emptySkids || 0,
+        skids: skidsProducedNum,
+        skids_vazios: emptySkidsNum,
         paradas: paradasData,
         producao: producaoData
       })

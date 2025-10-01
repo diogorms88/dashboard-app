@@ -358,3 +358,60 @@ export async function PUT(
     }, { status: 500 })
   }
 }
+
+export async function DELETE(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    // Verificar autenticação
+    const authHeader = request.headers.get('authorization')
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json({ error: 'Token de acesso requerido' }, { status: 401 })
+    }
+
+    const token = authHeader.substring(7)
+    const user = await verifyToken(token)
+    
+    if (!user) {
+      return NextResponse.json({ error: 'Token inválido ou expirado' }, { status: 401 })
+    }
+
+    const { id } = await params
+
+    // Verificar se o registro existe antes de tentar excluir
+    const { data: existingRecord, error: checkError } = await supabase
+      .from('registros')
+      .select('id, data, hora')
+      .eq('id', id)
+      .single()
+
+    if (checkError) {
+      if (checkError.code === 'PGRST116') {
+        return NextResponse.json({ error: 'Registro não encontrado' }, { status: 404 })
+      }
+      throw checkError
+    }
+
+    // Excluir o registro principal (paradas e producao são campos JSON na mesma tabela)
+    const { error: deleteError } = await supabase
+      .from('registros')
+      .delete()
+      .eq('id', id)
+
+    if (deleteError) {
+      throw deleteError
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: 'Registro excluído com sucesso'
+    })
+
+  } catch (error) {
+    return NextResponse.json({ 
+      error: 'Erro interno do servidor',
+      message: error instanceof Error ? error.message : 'Erro desconhecido'
+    }, { status: 500 })
+  }
+}

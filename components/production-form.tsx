@@ -271,43 +271,29 @@ export function ProductionForm({ onClose, targetDate }: ProductionFormProps) {
 
   const handleSave = async () => {
     try {
-      // Preparar os dados para validação
+      // Preparar os dados no formato esperado pela API
       const validProductions = productions.filter(p => p.model && p.color && p.quantity);
       const validDowntimes = downtimes.filter(d => d.reason && d.duration);
       
-      const productionData = {
-        time_slot: selectedTime,
-        shift: getShiftFromTime(selectedTime).toLowerCase().replace('º turno', '') as 'morning' | 'afternoon' | 'night',
-        skids_produced: parseInt(skidsProduced || '0'),
-        empty_skids: parseInt(emptySkids || '0'),
-        created_by_name: 'Sistema', // Será substituído pelo nome do usuário logado
-        paradas: validDowntimes.map(d => ({
-           motivo: d.reason,
-           inicio: new Date().toISOString(),
-           duracao: parseInt(d.duration),
-           observacoes: d.description
-         })),
-         producao: validProductions.map(p => ({
-           modelo: p.model,
-           cor: p.color.toLowerCase(),
-           qtd: parseInt(p.quantity),
-           repintura: p.isRepaint
-         }))
+      // Dados no formato esperado pela API do Supabase
+      const requestData = {
+        selectedTime: selectedTime,
+        shift: getShiftFromTime(selectedTime),
+        skidsProduced: parseInt(skidsProduced || '0'),
+        emptySkids: parseInt(emptySkids || '0'),
+        targetDate: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+        downtimes: validDowntimes.map(d => ({
+          reason: d.reason,
+          duration: parseInt(d.duration),
+          description: d.description || ''
+        })),
+        productions: validProductions.map(p => ({
+          model: p.model,
+          color: p.color,
+          quantity: parseInt(p.quantity),
+          isRepaint: p.isRepaint || false
+        }))
       };
-      
-      // Validar dados com Zod
-      const validation = validateData(CreateProductionRecordSchema, productionData);
-      
-      if (!validation.success) {
-        // Debug: log dos dados de validação
-        console.log('Validation failed:', validation);
-        console.log('Validation errors:', validation.errors);
-        console.log('Validation message:', validation.message);
-        
-        const errorMessage = formatValidationErrors(validation.errors);
-        toast.error(`Dados inválidos: ${errorMessage}`);
-        return;
-      }
       
       // Enviar os dados para a API
       if (!token) {
@@ -321,7 +307,7 @@ export function ProductionForm({ onClose, targetDate }: ProductionFormProps) {
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify(productionData)
+        body: JSON.stringify(requestData)
       });
       
       if (!response.ok) {

@@ -26,16 +26,13 @@ export function validateData<T>(
       // Formatar erros do Zod para um formato mais amigável
       const errors: Record<string, string[]> = {}
       
-      // Verificar se result.error e result.error.errors existem
-      if (result.error && result.error.errors && Array.isArray(result.error.errors)) {
-        result.error.errors.forEach((error) => {
-          const path = error.path ? error.path.join('.') : 'unknown'
-          if (!errors[path]) {
-            errors[path] = []
-          }
-          errors[path].push(error.message || 'Erro desconhecido')
-        })
-      }
+      result.error.errors.forEach((error) => {
+        const path = error.path.join('.')
+        if (!errors[path]) {
+          errors[path] = []
+        }
+        errors[path].push(error.message)
+      })
       
       return {
         success: false,
@@ -43,11 +40,9 @@ export function validateData<T>(
         message: 'Dados inválidos fornecidos'
       }
     }
-  } catch (error) {
-    console.error('Erro na validação:', error)
+  } catch {
     return {
       success: false,
-      errors: {},
       message: 'Erro interno de validação'
     }
   }
@@ -129,44 +124,16 @@ export function sanitizeData(data: unknown): unknown {
 
 // Função para converter erros de validação em mensagens amigáveis
 export function formatValidationErrors(
-  errors: Record<string, string[]> | undefined | null
+  errors: Record<string, string[]>
 ): string {
-  // Debug: log do que está sendo recebido
-  console.log('formatValidationErrors received:', errors);
-  console.log('Type of errors:', typeof errors);
-  
-  // Verificar se errors é null, undefined ou não é um objeto
-  if (!errors || typeof errors !== 'object') {
-    console.log('Returning: Erro de validação desconhecido (null/undefined/not object)');
-    return 'Erro de validação desconhecido'
-  }
-
-  // Verificar se o objeto errors está vazio
-  const errorEntries = Object.entries(errors)
-  console.log('Error entries:', errorEntries);
-  
-  if (errorEntries.length === 0) {
-    console.log('Returning: Erro de validação - nenhum detalhe disponível (empty object)');
-    return 'Erro de validação - nenhum detalhe disponível'
-  }
-
-  const messages = errorEntries
+  const messages = Object.entries(errors)
     .map(([field, fieldErrors]) => {
-      console.log(`Processing field: ${field}, errors:`, fieldErrors);
       const fieldName = field.charAt(0).toUpperCase() + field.slice(1)
-      // Verificar se fieldErrors é um array válido
-      if (!Array.isArray(fieldErrors)) {
-        return `${fieldName}: Erro de validação`
-      }
-      if (fieldErrors.length === 0) {
-        return `${fieldName}: Erro de validação`
-      }
       return `${fieldName}: ${fieldErrors.join(', ')}`
     })
     .join('; ')
   
-  console.log('Final formatted message:', messages);
-  return messages || 'Erro de validação'
+  return messages
 }
 
 // Validador para IDs UUID

@@ -2,6 +2,7 @@
 @import "tw-animate-css";
 @import "./accessibility.css";
 @import "./mobile-responsive.css";
+@import "./tablet-responsive.css";
 
 @custom-variant dark (&:is(.dark *));
 
