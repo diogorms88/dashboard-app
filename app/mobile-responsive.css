@@ -1,0 +1,433 @@
+/* Mobile Responsive Improvements */
+
+/* Melhorias gerais para mobile */
+@media (max-width: 768px) {
+  /* Container principal com padding adequado */
+  .container {
+    padding-left: 0.75rem;
+    padding-right: 0.75rem;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  /* Garantir que o main content não ultrapasse a viewport */
+  main {
+    max-width: 100vw;
+    overflow-x: hidden;
+    padding: 0.75rem;
+  }
+  
+  /* Cards com espaçamento otimizado */
+  .card {
+    margin-bottom: 1rem;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden !important;
+  }
+  
+  /* Grid responsivo - sempre uma coluna em mobile */
+  .grid {
+    gap: 0.75rem;
+    grid-template-columns: 1fr !important;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  /* Cards de resumo com melhor espaçamento */
+  .summary-cards {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.75rem !important;
+    width: 100% !important;
+  }
+  
+  /* Filtros em mobile */
+  .filters-container {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+  }
+  
+  .filter-row {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+    width: 100% !important;
+  }
+  
+  /* Inputs e selects com largura total */
+  .filter-input, .filter-select {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+  
+  /* Forçar grids específicos para uma coluna */
+  .grid-cols-1,
+  .grid-cols-2,
+  .grid-cols-3,
+  .grid-cols-4,
+  .grid-cols-5,
+  .md\:grid-cols-2,
+  .md\:grid-cols-3,
+  .md\:grid-cols-4,
+  .md\:grid-cols-5,
+  .lg\:grid-cols-2,
+  .lg\:grid-cols-3,
+  .xl\:grid-cols-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  /* Títulos de cards menores em mobile */
+  .card-title {
+    font-size: 1.125rem;
+    line-height: 1.5;
+  }
+  
+  .card-description {
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+}
+
+/* Melhorias específicas para gráficos */
+@media (max-width: 768px) {
+  /* ResponsiveContainer ajustado para mobile */
+  .recharts-responsive-container {
+    min-height: 280px !important;
+    height: 280px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+  
+  /* Garantir que os gráficos não ultrapassem a viewport */
+  .materials-chart-container {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow: hidden !important;
+  }
+  
+  /* Gráficos de pizza menores em mobile */
+  .recharts-pie {
+    transform: scale(0.7);
+    transform-origin: center;
+  }
+  
+  /* Labels dos gráficos de pizza menores e mais legíveis */
+  .recharts-pie-label-text {
+    font-size: 10px !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Gráfico de barras com margens reduzidas */
+  .materials-bar-chart {
+    margin: 5px 10px 30px 5px !important;
+  }
+  
+  /* Tooltip com melhor posicionamento */
+  .recharts-tooltip-wrapper {
+    z-index: 1000;
+  }
+  
+  .recharts-default-tooltip {
+    font-size: 11px !important;
+    padding: 6px !important;
+    border-radius: 6px !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+    max-width: 200px !important;
+  }
+  
+  /* XAxis labels menores e rotacionados */
+  .recharts-cartesian-axis-tick-value {
+    font-size: 9px !important;
+  }
+  
+  /* Legend com melhor espaçamento */
+  .recharts-legend-wrapper {
+    padding-top: 8px !important;
+  }
+  
+  .recharts-legend-item-text {
+    font-size: 11px !important;
+  }
+  
+  /* Reduzir margens dos gráficos */
+   .recharts-wrapper {
+     margin: 0 !important;
+   }
+   
+   /* Melhorias específicas para o heatmap de paradas */
+   .heatmap-container {
+     /* Manter layout horizontal para permitir scroll */
+     flex-direction: row !important;
+     overflow-x: auto !important;
+     -webkit-overflow-scrolling: touch !important;
+   }
+   
+   .heatmap-sidebar {
+     /* Sidebar fixa à direita */
+     flex-shrink: 0 !important;
+     width: 120px !important;
+     margin-left: 1rem !important;
+   }
+   
+   .heatmap-sidebar .space-y-1 {
+     display: flex !important;
+     flex-direction: column !important;
+     gap: 0.25rem !important;
+   }
+   
+   .heatmap-sidebar .space-y-1 > div {
+     margin: 0 !important;
+     font-size: 9px !important;
+   }
+   
+   .heatmap-grid {
+     /* Permitir scroll horizontal */
+     min-width: max-content !important;
+     font-size: 10px !important;
+     overflow-x: auto !important;
+   }
+   
+   /* Forçar grid horizontal no mobile */
+   .heatmap-grid > div {
+     display: grid !important;
+     grid-template-columns: 150px repeat(24, 35px) !important;
+     gap: 2px !important;
+     margin-bottom: 4px !important;
+   }
+   
+   .heatmap-cell {
+     height: 30px !important;
+     min-width: 35px !important;
+     font-size: 8px !important;
+     display: flex !important;
+     align-items: center !important;
+     justify-content: center !important;
+   }
+   
+   .heatmap-reason-cell {
+     padding: 4px !important;
+     font-size: 9px !important;
+     min-width: 150px !important;
+     width: 150px !important;
+     display: flex !important;
+     flex-direction: column !important;
+     justify-content: center !important;
+   }
+ }
+
+/* Melhorias para tabelas em mobile */
+@media (max-width: 768px) {
+  /* Eliminar scroll horizontal - forçar layout vertical */
+  .table-container {
+    overflow-x: visible !important;
+    width: 100% !important;
+  }
+  
+  /* Transformar tabelas em layout de cards em mobile */
+  .table-container table {
+    display: block !important;
+    width: 100% !important;
+  }
+  
+  .table-container thead {
+    display: none !important; /* Ocultar cabeçalho em mobile */
+  }
+  
+  .table-container tbody {
+    display: block !important;
+    width: 100% !important;
+  }
+  
+  .table-container tr {
+    display: block !important;
+    width: 100% !important;
+    margin-bottom: 1rem !important;
+    padding: 1rem !important;
+    border: 1px solid hsl(var(--border)) !important;
+    border-radius: 8px !important;
+    background: hsl(var(--card)) !important;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .table-container td {
+    display: block !important;
+    width: 100% !important;
+    padding: 0.5rem 0 !important;
+    border: none !important;
+    text-align: left !important;
+    position: relative !important;
+    padding-left: 40% !important;
+    font-size: 14px !important;
+  }
+  
+  /* Adicionar labels antes de cada célula */
+  .table-container td:before {
+    content: attr(data-label) !important;
+    position: absolute !important;
+    left: 0 !important;
+    top: 0.5rem !important;
+    width: 35% !important;
+    font-weight: 600 !important;
+    color: hsl(var(--muted-foreground)) !important;
+    font-size: 12px !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+  }
+  
+  /* Estilo especial para primeira célula (modelo) */
+  .table-container td:first-child {
+    font-weight: 700 !important;
+    font-size: 16px !important;
+    color: hsl(var(--foreground)) !important;
+    border-bottom: 1px solid hsl(var(--border)) !important;
+    margin-bottom: 0.5rem !important;
+    padding-bottom: 0.5rem !important;
+  }
+  
+  /* Remover sticky positioning em mobile */
+  .table-container .sticky {
+    position: static !important;
+  }
+}
+
+/* Melhorias para formulários e controles */
+@media (max-width: 768px) {
+  /* Inputs e selects maiores para melhor usabilidade */
+  .form-input,
+  .form-select {
+    min-height: 44px;
+    font-size: 16px; /* Previne zoom no iOS */
+    padding: 12px 16px;
+  }
+  
+  /* Botões com área de toque adequada */
+  .form-button {
+    min-height: 44px;
+    min-width: 44px;
+    padding: 12px 20px;
+    font-size: 16px;
+  }
+  
+  /* Labels maiores e mais legíveis */
+  .form-label {
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+}
+
+/* Melhorias específicas para a página de materiais */
+@media (max-width: 768px) {
+  /* Grid de gráficos em coluna única */
+  .materials-charts-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  /* Grid de tabelas em coluna única */
+  .materials-tables-grid {
+    grid-template-columns: 1fr !important;
+    gap: 1rem;
+  }
+  
+  /* Altura dos gráficos otimizada para mobile */
+  .materials-chart-container {
+    height: 300px !important;
+  }
+  
+  /* Gráfico de barras com margens ajustadas */
+  .materials-bar-chart {
+    margin: 10px 15px 40px 10px;
+  }
+  
+  /* Gráfico de pizza centralizado */
+  .materials-pie-chart {
+    margin: 10px;
+  }
+}
+
+/* Melhorias para navegação mobile */
+@media (max-width: 768px) {
+  /* Header com altura adequada */
+  .dashboard-header {
+    min-height: 60px;
+    padding: 0 1rem;
+  }
+  
+  /* Sidebar mobile otimizada */
+  .sidebar-mobile {
+    width: 280px;
+  }
+  
+  /* Conteúdo principal com padding adequado e sem overflow */
+  .main-content {
+    padding: 0.75rem;
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+    box-sizing: border-box;
+  }
+  
+  /* Garantir que o SidebarProvider não cause overflow */
+  [data-sidebar="provider"] {
+    width: 100%;
+    max-width: 100vw;
+    overflow-x: hidden;
+  }
+  
+  /* Trigger da sidebar com melhor posicionamento */
+  [data-sidebar="trigger"] {
+    margin: 0.5rem;
+    z-index: 50;
+  }
+}
+
+/* Melhorias para acessibilidade em mobile */
+@media (max-width: 768px) {
+  /* Foco mais visível em mobile */
+  *:focus-visible {
+    outline: 3px solid hsl(var(--ring));
+    outline-offset: 2px;
+  }
+  
+  /* Texto com contraste melhorado */
+  .text-high-contrast {
+    color: hsl(var(--foreground));
+    font-weight: 500;
+  }
+  
+  /* Estados de loading mais visíveis */
+  .loading-state {
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Otimizações para performance em mobile */
+@media (max-width: 768px) {
+  /* Reduz animações em dispositivos com pouca bateria */
+  @media (prefers-reduced-motion: reduce) {
+    .recharts-animation {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
+  
+  /* Otimiza renderização de gráficos */
+  .recharts-surface {
+    will-change: transform;
+  }
+  
+  /* Melhora performance de scroll */
+  .scroll-container {
+    -webkit-overflow-scrolling: touch;
+    transform: translateZ(0);
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "@typescript-eslint/recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["@typescript-eslint"],
+  "parserOptions": {
+    "ecmaVersion": 2020,
+    "sourceType": "module",
+    "project": "./tsconfig.json"
+  },
+  "rules": {
+    // Prevenir uso de 'any'
+    "@typescript-eslint/no-explicit-any": "error",
+    "@typescript-eslint/no-unsafe-any": "error",
+    "@typescript-eslint/no-unsafe-assignment": "error",
+    "@typescript-eslint/no-unsafe-call": "error",
+    "@typescript-eslint/no-unsafe-member-access": "error",
+    "@typescript-eslint/no-unsafe-return": "error",
+    
+    // Melhorar qualidade dos tipos
+    "@typescript-eslint/prefer-as-const": "error",
+    "@typescript-eslint/no-inferrable-types": "error",
+    "@typescript-eslint/array-type": ["error", { "default": "array" }],
+    "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    "@typescript-eslint/consistent-type-imports": [
+      "error",
+      {
+        "prefer": "type-imports",
+        "disallowTypeAnnotations": false
+      }
+    ],
+    
+    // Prevenir unused variables e imports
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
+      }
+    ],
+    
+    // Forçar uso de tipos mais específicos
+    "@typescript-eslint/ban-types": [
+      "error",
+      {
+        "types": {
+          "Object": {
+            "message": "Use {} instead",
+            "fixWith": "{}"
+          },
+          "Function": {
+            "message": "Use a specific function type instead"
+          },
+          "{}": false
+        }
+      }
+    ]
+  },
+  "ignorePatterns": [
+    "node_modules/",
+    ".next/",
+    "out/",
+    "build/",
+    "dist/"
+  ]
+}
