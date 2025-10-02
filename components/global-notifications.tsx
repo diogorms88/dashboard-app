@@ -139,21 +139,63 @@ export function GlobalNotifications({ notifications, onDismiss }: GlobalNotifica
 
 // Hook para gerenciar notificações globais
 let globalNotificationHandlers: ((notification: GlobalNotification) => void)[] = []
+let processedNotifications = new Set<string>()
+
+// Função para gerar ID único mais robusto
+function generateUniqueId(): string {
+  return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`
+}
+
+// Função para criar hash de conteúdo para detectar duplicatas
+function createContentHash(notification: Omit<GlobalNotification, 'id' | 'timestamp'>): string {
+  return `${notification.title}-${notification.message}-${notification.type}-${JSON.stringify(notification.data || {})}`
+}
 
 export function useGlobalNotifications() {
   const [notifications, setNotifications] = useState<GlobalNotification[]>([])
 
   const addNotification = (notification: Omit<GlobalNotification, 'id' | 'timestamp'>) => {
+    const contentHash = createContentHash(notification)
+    
+    // Verificar se já processamos esta notificação recentemente (últimos 5 segundos)
+    const recentKey = `${contentHash}-${Math.floor(Date.now() / 5000)}`
+    if (processedNotifications.has(recentKey)) {
+      return // Ignorar duplicata
+    }
+    
+    processedNotifications.add(recentKey)
+    
+    // Limpar hashes antigos (manter apenas últimos 10)
+    if (processedNotifications.size > 10) {
+      const oldestKeys = Array.from(processedNotifications).slice(0, processedNotifications.size - 10)
+      oldestKeys.forEach(key => processedNotifications.delete(key))
+    }
+
     const newNotification: GlobalNotification = {
       ...notification,
-      id: Math.random().toString(36).substr(2, 9),
+      id: generateUniqueId(),
       timestamp: new Date()
     }
     
-    setNotifications(prev => [...prev, newNotification])
-    
-    // Notificar outros componentes
-    globalNotificationHandlers.forEach(handler => handler(newNotification))
+    setNotifications(prev => {
+      // Verificar duplicatas por conteúdo nos últimos 5 segundos
+      const now = new Date()
+      const recentNotifications = prev.filter(n => 
+        now.getTime() - n.timestamp.getTime() < 5000
+      )
+      
+      const isDuplicate = recentNotifications.some(n => 
+        n.title === newNotification.title && 
+        n.message === newNotification.message &&
+        n.type === newNotification.type
+      )
+      
+      if (isDuplicate) {
+        return prev // Não adicionar duplicata
+      }
+      
+      return [...prev, newNotification]
+    })
   }
 
   const dismissNotification = (id: string) => {
@@ -168,10 +210,28 @@ export function useGlobalNotifications() {
   useEffect(() => {
     const handler = (notification: GlobalNotification) => {
       setNotifications(prev => {
-        // Evitar duplicatas
-        if (prev.some(n => n.id === notification.id)) {
+        // Verificar duplicatas por ID e conteúdo
+        const isDuplicateById = prev.some(n => n.id === notification.id)
+        if (isDuplicateById) {
           return prev
         }
+        
+        // Verificar duplicatas por conteúdo nos últimos 5 segundos
+        const now = new Date()
+        const recentNotifications = prev.filter(n => 
+          now.getTime() - n.timestamp.getTime() < 5000
+        )
+        
+        const isDuplicateByContent = recentNotifications.some(n => 
+          n.title === notification.title && 
+          n.message === notification.message &&
+          n.type === notification.type
+        )
+        
+        if (isDuplicateByContent) {
+          return prev
+        }
+        
         return [...prev, notification]
       })
     }
@@ -193,9 +253,19 @@ export function useGlobalNotifications() {
 
 // Função global para adicionar notificações de qualquer lugar
 export function showGlobalNotification(notification: Omit<GlobalNotification, 'id' | 'timestamp'>) {
+  const contentHash = createContentHash(notification)
+  
+  // Verificar se já processamos esta notificação recentemente
+  const recentKey = `${contentHash}-${Math.floor(Date.now() / 5000)}`
+  if (processedNotifications.has(recentKey)) {
+    return // Ignorar duplicata
+  }
+  
+  processedNotifications.add(recentKey)
+
   const newNotification: GlobalNotification = {
     ...notification,
-    id: Math.random().toString(36).substr(2, 9),
+    id: generateUniqueId(),
     timestamp: new Date()
   }
   

@@ -5,6 +5,10 @@ import { apiRequest } from "@/lib/api"
 import { useAuth } from "@/hooks/use-auth"
 import { showGlobalNotification } from "@/components/global-notifications"
 
+// Singleton para evitar múltiplas instâncias
+let notificationInstance: any = null
+let processedRequestIds = new Set<number>()
+
 export interface NotificationItem {
   id: string
   name: string
@@ -40,6 +44,13 @@ export function useRealTimeNotifications() {
   const [pendingCount, setPendingCount] = useState(0)
   const lastCheckTimeRef = useRef<Date>(new Date())
   const notifiedRequestsRef = useRef<Set<number>>(new Set())
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const isInitializedRef = useRef(false)
+
+  // Verificar se já existe uma instância ativa
+  if (notificationInstance && user && (user.papel === 'admin' || user.papel === 'manager')) {
+    return notificationInstance
+  }
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date()
@@ -117,12 +128,23 @@ export function useRealTimeNotifications() {
       const newRequests = await apiRequest(`/item-requests/recent?created_after=${timeFilter}`)
       
       if (newRequests && newRequests.length > 0) {
-        // Filtrar apenas solicitações que ainda não foram notificadas
+        // Filtrar apenas solicitações que ainda não foram processadas
         const trulyNewRequests = newRequests.filter((request: ItemRequest) => 
-          !notifiedRequestsRef.current.has(request.id)
+          !processedRequestIds.has(request.id)
         )
         
         if (trulyNewRequests.length > 0) {
+          // Marcar como processados
+          trulyNewRequests.forEach((request: ItemRequest) => {
+            processedRequestIds.add(request.id)
+          })
+          
+          // Limitar o tamanho do Set para evitar vazamento de memória
+          if (processedRequestIds.size > 100) {
+            const oldestIds = Array.from(processedRequestIds).slice(0, 50)
+            oldestIds.forEach(id => processedRequestIds.delete(id))
+          }
+          
           const newNotifications = trulyNewRequests.map((request: ItemRequest) => 
             createNotificationFromRequest(request, 'request')
           )
@@ -136,9 +158,6 @@ export function useRealTimeNotifications() {
           
           // Mostrar notificações globais apenas para admin e manager
           trulyNewRequests.forEach(request => {
-            // Marcar como notificado
-            notifiedRequestsRef.current.add(request.id)
-            
             const notification = newNotifications.find(n => n.requestId === request.id)
             if (notification) {
               showGlobalNotification({
@@ -175,22 +194,38 @@ export function useRealTimeNotifications() {
 
   // Efeito para buscar dados iniciais
   useEffect(() => {
-    if (user) {
+    if (user && !isInitializedRef.current) {
+      isInitializedRef.current = true
       fetchPendingCount()
-      fetchPendingRequests()
+      fetchPendingRequests().then(requests => {
+        // Marcar requests existentes como processados para evitar notificações duplicadas
+        requests.forEach(request => {
+          processedRequestIds.add(request.id)
+        })
+      })
     }
   }, [user, fetchPendingCount, fetchPendingRequests])
 
   // Efeito para verificar novas solicitações periodicamente (apenas para admin e manager)
   useEffect(() => {
     if (user && (user.papel === 'admin' || user.papel === 'manager')) {
+      // Limpar intervalo anterior se existir
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current)
+      }
+      
       // Verificar imediatamente
       checkForNewRequests()
       
       // Configurar intervalo para verificações periódicas (a cada 15 segundos)
-      const interval = setInterval(checkForNewRequests, 15000)
+      intervalRef.current = setInterval(checkForNewRequests, 15000)
       
-      return () => clearInterval(interval)
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+          intervalRef.current = null
+        }
+      }
     }
   }, [user, checkForNewRequests])
 
@@ -202,7 +237,7 @@ export function useRealTimeNotifications() {
     }
   }, [user, fetchPendingCount])
 
-  return {
+  const result = {
     notifications,
     pendingRequests,
     pendingCount,
@@ -212,4 +247,11 @@ export function useRealTimeNotifications() {
     fetchPendingCount,
     checkForNewRequests
   }
+
+  // Armazenar instância para evitar duplicação
+  if (user && (user.papel === 'admin' || user.papel === 'manager')) {
+    notificationInstance = result
+  }
+
+  return result
 }
