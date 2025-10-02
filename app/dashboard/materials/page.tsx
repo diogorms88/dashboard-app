@@ -459,20 +459,28 @@ export default function MaterialsPage() {
         <h2 id="tabelas-title" className="sr-only">Tabelas Detalhadas de Produção</h2>
         <div className="grid grid-cols-1 xl:grid-cols-2 gap-6 materials-tables-grid">
           {/* Tabela de Produção Hora a Hora por Modelo */}
-          <Card role="region" aria-labelledby="tabela-horaria-title">
-            <CardHeader>
-              <CardTitle id="tabela-horaria-title">Produção Hora a Hora por Modelo</CardTitle>
-              <CardDescription>Detalhamento da produção por modelo e horário</CardDescription>
+          <Card role="region" aria-labelledby="tabela-horaria-title" className="shadow-lg">
+            <CardHeader className="bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950 dark:to-indigo-950">
+              <CardTitle id="tabela-horaria-title" className="text-lg font-semibold text-blue-900 dark:text-blue-100">
+                Produção Hora a Hora por Modelo
+              </CardTitle>
+              <CardDescription className="text-blue-700 dark:text-blue-300">
+                Detalhamento da produção por modelo e horário
+              </CardDescription>
             </CardHeader>
-            <CardContent>
-              <div className="overflow-x-auto table-container" role="region" aria-label="Tabela com scroll horizontal" tabIndex={0}>
-                <Table role="table" aria-label="Produção hora a hora por modelo">
+            <CardContent className="p-0">
+              <div className="overflow-x-auto" role="region" aria-label="Tabela com scroll horizontal" tabIndex={0}>
+                <Table role="table" aria-label="Produção hora a hora por modelo" className="min-w-full">
                   <TableHeader>
-                    <TableRow>
-                      <TableHead className="sticky left-0 bg-background z-10 min-w-[150px] table-header table-cell-model" scope="col">Modelo</TableHead>
-                      <TableHead className="text-center min-w-[80px] table-header table-cell-number" scope="col">Total</TableHead>
+                    <TableRow className="bg-gray-50 dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
+                      <TableHead className="sticky left-0 bg-gray-50 dark:bg-gray-800 z-20 min-w-[180px] px-6 py-4 text-left font-semibold text-gray-900 dark:text-gray-100 border-r border-gray-200 dark:border-gray-700" scope="col">
+                        Modelo
+                      </TableHead>
+                      <TableHead className="text-center min-w-[100px] px-4 py-4 font-semibold text-gray-900 dark:text-gray-100 bg-blue-50 dark:bg-blue-900" scope="col">
+                        Total
+                      </TableHead>
                       {availableHours.map((hour) => (
-                        <TableHead key={hour} className="text-center min-w-[60px] table-header table-cell-number" scope="col">
+                        <TableHead key={hour} className="text-center min-w-[80px] px-3 py-4 font-medium text-gray-700 dark:text-gray-300" scope="col">
                           {String(hour).padStart(2, '0')}h
                         </TableHead>
                       ))}
@@ -480,19 +488,32 @@ export default function MaterialsPage() {
                   </TableHeader>
                   <TableBody>
                     {hourlyProductionData.map((row, index) => (
-                      <TableRow key={index}>
-                        <TableCell className="sticky left-0 bg-background z-10 font-medium table-cell table-cell-model" scope="row" data-label="Modelo">
-                          {row.modelo}
+                      <TableRow key={index} className={`border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+                        index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-25 dark:bg-gray-850'
+                      }`}>
+                        <TableCell className="sticky left-0 bg-inherit z-10 px-6 py-4 font-medium text-gray-900 dark:text-gray-100 border-r border-gray-200 dark:border-gray-700" scope="row" data-label="Modelo">
+                          <div className="flex items-center">
+                            <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                            {row.modelo}
+                          </div>
                         </TableCell>
-                        <TableCell className="text-center font-semibold table-cell table-cell-number" aria-label={`Total: ${row.total} peças`} data-label="Total">
-                          {row.total}
+                        <TableCell className="text-center px-4 py-4 font-bold text-blue-600 dark:text-blue-400 bg-blue-25 dark:bg-blue-950" aria-label={`Total: ${row.total} peças`} data-label="Total">
+                          <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200">
+                            {row.total}
+                          </span>
                         </TableCell>
                         {availableHours.map((hour) => {
                           const hourKey = `h${String(hour).padStart(2, '0')}`;
                           const value = row[hourKey] || 0;
                           return (
-                            <TableCell key={hour} className="text-center table-cell table-cell-number" aria-label={`${String(hour).padStart(2, '0')}h: ${value} peças`} data-label={`${String(hour).padStart(2, '0')}h`}>
-                              {value}
+                            <TableCell key={hour} className="text-center px-3 py-4 text-gray-700 dark:text-gray-300" aria-label={`${String(hour).padStart(2, '0')}h: ${value} peças`} data-label={`${String(hour).padStart(2, '0')}h`}>
+                              <span className={`inline-flex items-center justify-center w-8 h-8 rounded-full text-sm font-medium ${
+                                value > 0 
+                                  ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' 
+                                  : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                              }`}>
+                                {value}
+                              </span>
                             </TableCell>
                           );
                         })}
@@ -505,33 +526,68 @@ export default function MaterialsPage() {
           </Card>
 
         {/* Tabela de Pintura Detalhada por Modelo e Cor */}
-        <Card>
-          <CardHeader>
-            <CardTitle>Pintura Detalhada por Modelo e Cor</CardTitle>
-            <CardDescription>Detalhamento completo da pintura por modelo, cor e tipo</CardDescription>
+        <Card className="shadow-lg">
+          <CardHeader className="bg-gradient-to-r from-green-50 to-emerald-50 dark:from-green-950 dark:to-emerald-950">
+            <CardTitle className="text-lg font-semibold text-green-900 dark:text-green-100">
+              Pintura Detalhada por Modelo e Cor
+            </CardTitle>
+            <CardDescription className="text-green-700 dark:text-green-300">
+              Detalhamento completo da pintura por modelo, cor e tipo
+            </CardDescription>
           </CardHeader>
-          <CardContent>
-            <div className="overflow-x-auto table-container">
-              <Table>
+          <CardContent className="p-0">
+            <div className="overflow-x-auto">
+              <Table className="min-w-full">
                 <TableHeader>
-                  <TableRow>
-                    <TableHead className="table-header table-cell-model">Modelo</TableHead>
-                    <TableHead className="table-header">Cor</TableHead>
-                    <TableHead className="text-center table-header table-cell-number">Quantidade</TableHead>
-                    <TableHead className="table-header">Tipo</TableHead>
+                  <TableRow className="bg-gray-50 dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
+                    <TableHead className="px-6 py-4 text-left font-semibold text-gray-900 dark:text-gray-100 min-w-[180px]">
+                      Modelo
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left font-semibold text-gray-900 dark:text-gray-100 min-w-[150px]">
+                      Cor
+                    </TableHead>
+                    <TableHead className="text-center px-4 py-4 font-semibold text-gray-900 dark:text-gray-100 min-w-[120px] bg-green-50 dark:bg-green-900">
+                      Quantidade
+                    </TableHead>
+                    <TableHead className="px-6 py-4 text-left font-semibold text-gray-900 dark:text-gray-100 min-w-[120px]">
+                      Tipo
+                    </TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
                   {detailedPaintingData.map((row, index) => (
-                    <TableRow key={index}>
-                      <TableCell className="font-medium table-cell table-cell-model" data-label="Modelo">{row.modelo}</TableCell>
-                      <TableCell className="table-cell" data-label="Cor">{row.cor}</TableCell>
-                      <TableCell className="text-center font-semibold table-cell table-cell-number" data-label="Quantidade">{row.quantidade}</TableCell>
-                      <TableCell className="table-cell" data-label="Tipo">
-                        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
+                    <TableRow key={index} className={`border-b border-gray-100 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors ${
+                      index % 2 === 0 ? 'bg-white dark:bg-gray-900' : 'bg-gray-25 dark:bg-gray-850'
+                    }`}>
+                      <TableCell className="px-6 py-4 font-medium text-gray-900 dark:text-gray-100" data-label="Modelo">
+                        <div className="flex items-center">
+                          <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                          {row.modelo}
+                        </div>
+                      </TableCell>
+                      <TableCell className="px-6 py-4 text-gray-700 dark:text-gray-300" data-label="Cor">
+                        <div className="flex items-center">
+                          <div className="w-4 h-4 rounded-full mr-3 border border-gray-300 dark:border-gray-600" 
+                               style={{backgroundColor: row.cor.toLowerCase().includes('branco') ? '#ffffff' : 
+                                                      row.cor.toLowerCase().includes('preto') ? '#000000' :
+                                                      row.cor.toLowerCase().includes('azul') ? '#3b82f6' :
+                                                      row.cor.toLowerCase().includes('vermelho') ? '#ef4444' :
+                                                      row.cor.toLowerCase().includes('verde') ? '#10b981' :
+                                                      row.cor.toLowerCase().includes('amarelo') ? '#f59e0b' :
+                                                      '#6b7280'}}></div>
+                          <span className="font-medium">{row.cor}</span>
+                        </div>
+                      </TableCell>
+                      <TableCell className="text-center px-4 py-4 bg-green-25 dark:bg-green-950" data-label="Quantidade">
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200">
+                          {row.quantidade}
+                        </span>
+                      </TableCell>
+                      <TableCell className="px-6 py-4" data-label="Tipo">
+                        <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-medium ${
                           row.tipo === 'Normal' 
-                            ? 'bg-green-100 text-green-800' 
-                            : 'bg-orange-100 text-orange-800'
+                            ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' 
+                            : 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-200'
                         }`}>
                           {row.tipo}
                         </span>
