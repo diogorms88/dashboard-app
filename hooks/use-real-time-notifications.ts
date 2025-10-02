@@ -5,8 +5,7 @@ import { apiRequest } from "@/lib/api"
 import { useAuth } from "@/hooks/use-auth"
 import { showGlobalNotification } from "@/components/global-notifications"
 
-// Singleton para evitar múltiplas instâncias
-let notificationInstance: any = null
+// Controle global para evitar múltiplas execuções
 let processedRequestIds = new Set<number>()
 
 export interface NotificationItem {
@@ -46,11 +45,6 @@ export function useRealTimeNotifications() {
   const notifiedRequestsRef = useRef<Set<number>>(new Set())
   const intervalRef = useRef<NodeJS.Timeout | null>(null)
   const isInitializedRef = useRef(false)
-
-  // Verificar se já existe uma instância ativa
-  if (notificationInstance && user && (user.papel === 'admin' || user.papel === 'manager')) {
-    return notificationInstance
-  }
 
   const formatTimeAgo = (date: Date) => {
     const now = new Date()
@@ -246,11 +240,6 @@ export function useRealTimeNotifications() {
     fetchPendingRequests,
     fetchPendingCount,
     checkForNewRequests
-  }
-
-  // Armazenar instância para evitar duplicação
-  if (user && (user.papel === 'admin' || user.papel === 'manager')) {
-    notificationInstance = result
   }
 
   return result

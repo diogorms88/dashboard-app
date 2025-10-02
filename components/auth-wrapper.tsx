@@ -6,7 +6,7 @@ import { AppSidebar } from '@/components/app-sidebar'
 import { GlobalNotifications, useGlobalNotifications } from '@/components/global-notifications'
 import { useRealTimeNotifications } from '@/hooks/use-real-time-notifications'
 import { NotificationsButton } from '@/components/notifications-button'
-import { ReactNode, useCallback } from 'react'
+import { ReactNode } from 'react'
 
 interface AuthWrapperProps {
   children: ReactNode
@@ -16,14 +16,9 @@ interface AuthWrapperProps {
 export function AuthWrapper({ children, requiredRoles }: AuthWrapperProps) {
   const { user, isLoading } = useAuth()
   // Sempre chamar hooks na mesma ordem para evitar erros do React
-  const { notifications, dismissNotification: originalDismissNotification } = useGlobalNotifications()
+  const { notifications, dismissNotification } = useGlobalNotifications()
   // Ativar verificações periódicas de novas solicitações para admin/manager
   useRealTimeNotifications()
-
-  // Estabilizar a referência da função para evitar loops infinitos
-  const dismissNotification = useCallback((id: string) => {
-    originalDismissNotification(id)
-  }, [originalDismissNotification])
 
   // Mostrar loading enquanto verifica autenticação
   if (isLoading) {
