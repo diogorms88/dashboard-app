@@ -410,13 +410,7 @@ export function ProductionForm({ onClose, targetDate }: ProductionFormProps) {
         {/* Motivos de Paradas */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Motivos de Paradas
-              <Button onClick={addDowntime} size="sm" variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                Adicionar Parada
-              </Button>
-            </CardTitle>
+            <CardTitle>Motivos de Paradas</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {downtimes.map((downtime, index) => (
@@ -480,19 +474,21 @@ export function ProductionForm({ onClose, targetDate }: ProductionFormProps) {
                 </div>
               </div>
             ))}
+            
+            {/* Botão Adicionar Parada movido para o final do CardContent */}
+            <div className="flex justify-center pt-4">
+              <Button onClick={addDowntime} size="sm" variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar Parada
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
         {/* Produção por Modelo e Cor */}
         <Card>
           <CardHeader>
-            <CardTitle className="flex items-center justify-between">
-              Produção por Modelo e Cor
-              <Button onClick={addProduction} size="sm" variant="outline">
-                <Plus className="h-4 w-4 mr-2" />
-                Adicionar Produção
-              </Button>
-            </CardTitle>
+            <CardTitle>Produção por Modelo e Cor</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             {productions.map((production, index) => (
@@ -566,6 +562,14 @@ export function ProductionForm({ onClose, targetDate }: ProductionFormProps) {
                 </div>
               </div>
             ))}
+            
+            {/* Botão Adicionar Produção movido para o final do CardContent */}
+            <div className="flex justify-center pt-4">
+              <Button onClick={addProduction} size="sm" variant="outline">
+                <Plus className="h-4 w-4 mr-2" />
+                Adicionar Produção
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

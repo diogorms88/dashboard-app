@@ -107,9 +107,7 @@ const projects = [
 export function AppSidebar() {
   const pathname = usePathname()
   const { user } = useAuth()
-  const { setOpen } = useSidebar()
   const [noActionCount, setNoActionCount] = useState(0)
-  const [isHovered, setIsHovered] = useState(false)
 
   // Função para verificar se o usuário tem permissão para ver um item
   const hasPermission = (requiredRoles: string[]) => {
@@ -159,22 +157,9 @@ export function AppSidebar() {
   const filteredProjects = projects.filter(project => {
     return hasPermission(['admin', 'manager'])
   })
-
-  // Handlers para hover
-  const handleMouseEnter = () => {
-    setIsHovered(true)
-    setOpen(true)
-  }
-
-  const handleMouseLeave = () => {
-    setIsHovered(false)
-    setOpen(false)
-  }
   
   return (
     <Sidebar 
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
       collapsible="icon"
       role="navigation"
       aria-label="Menu principal de navegação"
