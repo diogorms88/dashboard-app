@@ -561,11 +561,17 @@ class DashboardService {
             const reason = parada.tipo
             
             if (!current.reasons.has(reason)) {
-              current.reasons.set(reason, { frequency: 0, duration: 0 })
+              current.reasons.set(reason, { frequency: 0, duration: 0, details: [] })
             }
             const reasonData = current.reasons.get(reason)!
             reasonData.frequency += 1
             reasonData.duration += parada.tempo
+            reasonData.details.push({
+              date: registro.data,
+              duration: parada.tempo,
+              frequency: 1,
+              description: parada.descrição || null
+            })
           }
         })
       }
@@ -576,7 +582,8 @@ class DashboardService {
         const reasons = Array.from(item.reasons.entries()).map(([reason, data]) => ({
           reason,
           frequency: data.frequency,
-          duration: data.duration
+          duration: data.duration,
+          details: data.details
         }))
         
         const total_frequency = reasons.reduce((sum, r) => sum + r.frequency, 0)

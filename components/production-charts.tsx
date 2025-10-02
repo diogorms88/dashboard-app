@@ -644,11 +644,26 @@ function ProductionCharts({ filters }: ProductionChartsProps) {
                       }
                       
                       reasonHourlyData[reasonName][hour].value += value;
-                      reasonHourlyData[reasonName][hour].details.push({
-                        date: item.date,
-                        duration: reason.duration,
-                        frequency: reason.frequency
-                      });
+                      
+                      // Adicionar todos os detalhes da API
+                      if (reason.details && Array.isArray(reason.details)) {
+                        reason.details.forEach(detail => {
+                          reasonHourlyData[reasonName][hour].details.push({
+                            date: detail.date,
+                            duration: detail.duration,
+                            frequency: detail.frequency,
+                            description: detail.description
+                          });
+                        });
+                      } else {
+                        // Fallback para compatibilidade
+                        reasonHourlyData[reasonName][hour].details.push({
+                          date: item.date,
+                          duration: reason.duration,
+                          frequency: reason.frequency,
+                          description: null
+                        });
+                      }
                     });
                   });
                   
@@ -802,6 +817,12 @@ function ProductionCharts({ filters }: ProductionChartsProps) {
                        <span className="ml-2">{detail.duration} min</span>
                      </div>
                    </div>
+                   {detail.description && (
+                     <div className="mt-3 pt-3 border-t border-gray-200">
+                       <span className="font-medium text-gray-600">Descrição:</span>
+                       <p className="mt-1 text-sm text-gray-700 leading-relaxed">{detail.description}</p>
+                     </div>
+                   )}
                  </div>
                ))}
              </div>
