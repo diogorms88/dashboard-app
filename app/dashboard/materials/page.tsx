@@ -469,7 +469,8 @@ export default function MaterialsPage() {
               </CardDescription>
             </CardHeader>
             <CardContent className="p-0">
-              <div className="overflow-x-auto" role="region" aria-label="Tabela com scroll horizontal" tabIndex={0}>
+              {/* Layout Desktop - Tabela tradicional */}
+              <div className="hidden md:block overflow-x-auto" role="region" aria-label="Tabela com scroll horizontal" tabIndex={0}>
                 <Table role="table" aria-label="Produção hora a hora por modelo" className="min-w-full">
                   <TableHeader>
                     <TableRow className="bg-gray-50 dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
@@ -522,6 +523,49 @@ export default function MaterialsPage() {
                   </TableBody>
                 </Table>
               </div>
+
+              {/* Layout Mobile - Cards empilhados */}
+              <div className="md:hidden p-4 space-y-4">
+                {hourlyProductionData.map((row, index) => (
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+                    {/* Cabeçalho do card com modelo e total */}
+                    <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-blue-500 rounded-full mr-3"></div>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100 text-lg">{row.modelo}</h3>
+                      </div>
+                      <div className="text-right">
+                        <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">Total</div>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-blue-100 text-blue-800 dark:bg-blue-800 dark:text-blue-200">
+                          {row.total}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    {/* Grid de horas */}
+                    <div className="grid grid-cols-4 gap-3">
+                      {availableHours.map((hour) => {
+                        const hourKey = `h${String(hour).padStart(2, '0')}`;
+                        const value = row[hourKey] || 0;
+                        return (
+                          <div key={hour} className="text-center">
+                            <div className="text-xs text-gray-500 dark:text-gray-400 mb-1">
+                              {String(hour).padStart(2, '0')}h
+                            </div>
+                            <span className={`inline-flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium ${
+                              value > 0 
+                                ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' 
+                                : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'
+                            }`}>
+                              {value}
+                            </span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </CardContent>
           </Card>
 
@@ -536,7 +580,8 @@ export default function MaterialsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent className="p-0">
-            <div className="overflow-x-auto">
+            {/* Layout Desktop - Tabela tradicional */}
+            <div className="hidden md:block overflow-x-auto">
               <Table className="min-w-full">
                 <TableHeader>
                   <TableRow className="bg-gray-50 dark:bg-gray-800 border-b-2 border-gray-200 dark:border-gray-700">
@@ -596,6 +641,49 @@ export default function MaterialsPage() {
                   ))}
                   </TableBody>
                 </Table>
+              </div>
+
+              {/* Layout Mobile - Cards empilhados */}
+              <div className="md:hidden p-4 space-y-4">
+                {detailedPaintingData.map((row, index) => (
+                  <div key={index} className="bg-white dark:bg-gray-800 rounded-lg border border-gray-200 dark:border-gray-700 p-4 shadow-sm">
+                    {/* Cabeçalho do card */}
+                    <div className="flex items-center justify-between mb-3 pb-3 border-b border-gray-200 dark:border-gray-700">
+                      <div className="flex items-center">
+                        <div className="w-3 h-3 bg-green-500 rounded-full mr-3"></div>
+                        <h3 className="font-semibold text-gray-900 dark:text-gray-100">{row.modelo}</h3>
+                      </div>
+                      <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                        row.tipo === 'Normal' 
+                          ? 'bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200' 
+                          : 'bg-orange-100 text-orange-800 dark:bg-orange-800 dark:text-orange-200'
+                      }`}>
+                        {row.tipo}
+                      </span>
+                    </div>
+                    
+                    {/* Informações principais */}
+                    <div className="space-y-3">
+                      {/* Cor */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center">
+                          <div className="w-4 h-4 rounded-full mr-3 border border-gray-300 dark:border-gray-600" 
+                               style={{backgroundColor: row.cor.toLowerCase().includes('branco') ? '#ffffff' : 
+                                                      row.cor.toLowerCase().includes('preto') ? '#000000' :
+                                                      row.cor.toLowerCase().includes('azul') ? '#3b82f6' :
+                                                      row.cor.toLowerCase().includes('vermelho') ? '#ef4444' :
+                                                      row.cor.toLowerCase().includes('verde') ? '#10b981' :
+                                                      row.cor.toLowerCase().includes('amarelo') ? '#f59e0b' :
+                                                      '#6b7280'}}></div>
+                          <span className="font-medium text-gray-700 dark:text-gray-300">{row.cor}</span>
+                        </div>
+                        <span className="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold bg-green-100 text-green-800 dark:bg-green-800 dark:text-green-200">
+                          {row.quantidade}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
             </CardContent>
           </Card>
